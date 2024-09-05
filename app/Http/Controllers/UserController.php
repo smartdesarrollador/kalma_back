@@ -10,6 +10,11 @@ use App\Models\Permiso;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTExceptions;
 
+
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Validator;
+
+
 class UserController extends Controller
 {
     public function register(Request $request){
@@ -69,5 +74,90 @@ if(!JWTAuth::attempt($credentials)){
 
         return response()->json($response);
 
+    }
+
+    /* Funciones Blog */
+
+    public function index()
+    {
+        // Obtener todos los usuarios con los posts relacionados
+        $users = User::with('posts')->get();
+        return UserResource::collection($users);
+    }
+
+    public function create()
+    {
+        // En una API RESTful, esta función no se utiliza normalmente.
+        return response()->json(['message' => 'Method not allowed'], 405);
+    }
+
+    public function store(Request $request)
+    {
+        // Validar los datos recibidos
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'rol' => 'required|in:autor,administrador',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // Crear un nuevo usuario
+        $user = User::create([
+            'nombre' => $request->nombre,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'rol' => $request->rol,
+        ]);
+
+        return new UserResource($user);
+    }
+
+    public function show(User $user)
+    {
+        // Mostrar un usuario específico con sus posts relacionados
+        return new UserResource($user->load('posts'));
+    }
+
+    public function edit(User $user)
+    {
+        // En una API RESTful, esta función no se utiliza normalmente.
+        return response()->json(['message' => 'Method not allowed'], 405);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        // Validar los datos para actualizar el usuario
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'sometimes|nullable|string|min:8',
+            'rol' => 'sometimes|required|in:autor,administrador',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // Actualizar el usuario
+        $user->update([
+            'nombre' => $request->nombre ?? $user->nombre,
+            'email' => $request->email ?? $user->email,
+            'password' => $request->password ? Hash::make($request->password) : $user->password,
+            'rol' => $request->rol ?? $user->rol,
+        ]);
+
+        return new UserResource($user);
+    }
+
+    public function destroy(User $user)
+    {
+        // Eliminar el usuario
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted successfully']);
     }
 }
