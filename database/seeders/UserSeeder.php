@@ -20,6 +20,7 @@ class UserSeeder extends Seeder
             'email' => "admin@kalmaperu.org",
             'email_verified_at' => null,
             'password' => Hash::make('admin2024'),
+            'rol' => 'administrador',
             'remember_token' => null,
         ]);
 
@@ -29,6 +30,7 @@ class UserSeeder extends Seeder
             'email' => "jacky@testcorreo.com",
             'email_verified_at' => null,
             'password' => Hash::make('1234567'),
+            'rol' => 'autor',
             'remember_token' => null,
         ]);
     
@@ -38,6 +40,7 @@ class UserSeeder extends Seeder
             'email' => "tomas@testcorreo.com",
             'email_verified_at' => null,
             'password' => Hash::make('peru123'),
+            'rol' => 'autor',
             'remember_token' => null,
         ]);
 

@@ -25,6 +25,11 @@ use App\Http\Controllers\ContactoController;
 use App\Http\Controllers\TestimonioController;
 use App\Models\Producto;
 
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\TagController;
+
 use Illuminate\Support\Facades\Mail;
 
 /*
@@ -130,6 +135,15 @@ Route::put('testimonios/{id}', [TestimonioController::class, 'update']);
 Route::delete('testimonios/{id}', [TestimonioController::class, 'destroy']);
 Route::post('testimonios/subir', [TestimonioController::class, 'file']);
 Route::post('testimonios/update', [TestimonioController::class, 'updateFile']);
+
+
+// Blog
+
+Route::apiResource('posts', PostController::class);
+Route::apiResource('users', UserController::class);
+Route::apiResource('categories', CategoryController::class);
+Route::apiResource('comments', CommentController::class);
+Route::apiResource('tags', TagController::class);
 
 
 

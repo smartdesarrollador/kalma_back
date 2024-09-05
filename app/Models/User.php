@@ -63,7 +63,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Rol::class, 'roles_usuarios', 'id_user', 'id_rol');
     }
 
-    public function Empleador()
+    /* public function Empleador()
     {
         return $this->hasOne(Empleador::class);
     }
@@ -71,6 +71,16 @@ class User extends Authenticatable implements JWTSubject
     public function Trabajador()
     {
         return $this->hasOne(Trabajador::class);
+    } */
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'id_autor');
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->password;
     }
     
 }

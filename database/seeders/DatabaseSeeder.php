@@ -57,6 +57,12 @@ class DatabaseSeeder extends Seeder
             FeedbackSeeder::class,
             ContactoSeeder::class,
             TestimonioSeeder::class,
+            PostsTableSeeder::class,
+            CategoriesTableSeeder::class,
+            CommentsTableSeeder::class,
+            TagsTableSeeder::class,
+            PostTagsTableSeeder::class,
+            PostCategoryTableSeeder::class,
             
         ]);
     }
