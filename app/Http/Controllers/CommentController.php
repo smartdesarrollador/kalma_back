@@ -25,26 +25,23 @@ class CommentController extends Controller
 
     public function store(Request $request)
     {
-        // Validar los datos recibidos
-        $validator = Validator::make($request->all(), [
+       // Validar los datos enviados
+        $validatedData = $request->validate([
+            'id_articulo' => 'required|exists:posts,id', // Verifica que el post relacionado existe
             'nombre_comentarista' => 'required|string|max:255',
             'contenido' => 'required|string',
-            'id_articulo' => 'required|exists:posts,id',
-            'fecha_comentario' => 'nullable|date',
+            'fecha_comentario' => 'required|date', // Asegurarse que es una fecha válida
         ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
 
         // Crear el comentario
         $comment = Comment::create([
-            'nombre_comentarista' => $request->nombre_comentarista,
-            'contenido' => $request->contenido,
-            'id_articulo' => $request->id_articulo,
-            'fecha_comentario' => $request->fecha_comentario ?? now(),
+            'id_articulo' => $validatedData['id_articulo'],
+            'nombre_comentarista' => $validatedData['nombre_comentarista'],
+            'contenido' => $validatedData['contenido'],
+            'fecha_comentario' => $validatedData['fecha_comentario'],
         ]);
 
+        // Retornar el comentario recién creado usando el CommentResource
         return new CommentResource($comment);
     }
 
@@ -62,20 +59,23 @@ class CommentController extends Controller
 
     public function update(Request $request, Comment $comment)
     {
-        // Validar los datos recibidos
-        $validator = Validator::make($request->all(), [
-            'nombre_comentarista' => 'sometimes|required|string|max:255',
-            'contenido' => 'sometimes|required|string',
-            'fecha_comentario' => 'nullable|date',
+        // Validar los datos enviados
+        $validatedData = $request->validate([
+            'id_articulo' => 'required|exists:posts,id', // Verifica que el post relacionado existe
+            'nombre_comentarista' => 'required|string|max:255',
+            'contenido' => 'required|string',
+            'fecha_comentario' => 'required|date', // Asegúrate de que es una fecha válida
         ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
+        // Actualizar el comentario con los datos validados
+        $comment->update([
+            'id_articulo' => $validatedData['id_articulo'],
+            'nombre_comentarista' => $validatedData['nombre_comentarista'],
+            'contenido' => $validatedData['contenido'],
+            'fecha_comentario' => $validatedData['fecha_comentario'],
+        ]);
 
-        // Actualizar los datos del comentario
-        $comment->update($request->only(['nombre_comentarista', 'contenido', 'fecha_comentario']));
-
+        // Retornar el comentario actualizado usando el CommentResource
         return new CommentResource($comment);
     }
 

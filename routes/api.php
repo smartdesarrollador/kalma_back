@@ -138,7 +138,6 @@ Route::post('testimonios/update', [TestimonioController::class, 'updateFile']);
 
 
 // Blog
-
 Route::apiResource('posts', PostController::class);
 Route::apiResource('users', UserController::class);
 Route::apiResource('categories', CategoryController::class);

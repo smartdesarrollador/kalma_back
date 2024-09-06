@@ -95,7 +95,7 @@ if(!JWTAuth::attempt($credentials)){
     {
         // Validar los datos recibidos
         $validator = Validator::make($request->all(), [
-            'nombre' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'rol' => 'required|in:autor,administrador',
@@ -107,7 +107,7 @@ if(!JWTAuth::attempt($credentials)){
 
         // Crear un nuevo usuario
         $user = User::create([
-            'nombre' => $request->nombre,
+            'name' => $request->nombre,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'rol' => $request->rol,
@@ -132,7 +132,7 @@ if(!JWTAuth::attempt($credentials)){
     {
         // Validar los datos para actualizar el usuario
         $validator = Validator::make($request->all(), [
-            'nombre' => 'sometimes|required|string|max:255',
+            'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'sometimes|nullable|string|min:8',
             'rol' => 'sometimes|required|in:autor,administrador',
@@ -144,7 +144,7 @@ if(!JWTAuth::attempt($credentials)){
 
         // Actualizar el usuario
         $user->update([
-            'nombre' => $request->nombre ?? $user->nombre,
+            'name' => $request->nombre ?? $user->nombre,
             'email' => $request->email ?? $user->email,
             'password' => $request->password ? Hash::make($request->password) : $user->password,
             'rol' => $request->rol ?? $user->rol,

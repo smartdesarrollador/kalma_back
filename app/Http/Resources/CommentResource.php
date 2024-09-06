@@ -18,10 +18,10 @@ class CommentResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'id_articulo' => $this->id_articulo,
             'nombre_comentarista' => $this->nombre_comentarista,
             'contenido' => $this->contenido,
             'fecha_comentario' => $this->fecha_comentario,
-            'post' => new PostResource($this->whenLoaded('post')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
