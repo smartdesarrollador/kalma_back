@@ -25,44 +25,46 @@ class PostController extends Controller
     }
 
     public function store(Request $request)
-    {
-        // Validar los datos recibidos
-        $validator = Validator::make($request->all(), [
-            'titulo' => 'required|string|max:255',
-            'contenido' => 'required|string',
-            'id_autor' => 'required|exists:users,id',
-            'estado' => 'required|in:publicado,borrador',
-            'fecha_publicacion' => 'nullable|date',
-            'categorias' => 'array',
-            'categorias.*' => 'exists:categories,id',
-            'tags' => 'array',
-            'tags.*' => 'exists:tags,id',
-        ]);
+{
+    // Validar los datos recibidos
+    $validator = Validator::make($request->all(), [
+        'titulo' => 'required|string|max:255',
+        'contenido' => 'required|string',
+        'id_autor' => 'required|exists:users,id',
+        'estado' => 'required|in:publicado,borrador',
+        'fecha_publicacion' => 'nullable|date',
+        'categorias' => 'array', // Validar que sea un array de categorías
+        'categorias.*' => 'exists:categories,id', // Validar que cada categoría exista
+        'tags' => 'array', // Validar que sea un array de tags
+        'tags.*' => 'exists:tags,id', // Validar que cada tag exista
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        // Crear el post
-        $post = Post::create([
-            'titulo' => $request->titulo,
-            'contenido' => $request->contenido,
-            'id_autor' => $request->id_autor,
-            'estado' => $request->estado,
-            'fecha_publicacion' => $request->fecha_publicacion,
-        ]);
-
-        // Sincronizar categorías y etiquetas si están presentes
-        if ($request->has('categorias')) {
-            $post->categorias()->sync($request->categorias);
-        }
-
-        if ($request->has('tags')) {
-            $post->tags()->sync($request->tags);
-        }
-
-        return new PostResource($post);
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422); // Devolver errores de validación
     }
+
+    // Crear el post con los datos recibidos
+    $post = Post::create([
+        'titulo' => $request->titulo,
+        'contenido' => $request->contenido,
+        'id_autor' => $request->id_autor,
+        'estado' => $request->estado,
+        'fecha_publicacion' => $request->fecha_publicacion,
+    ]);
+
+    // Sincronizar las categorías y etiquetas si están presentes
+    if ($request->has('categorias')) {
+        $post->categorias()->sync($request->categorias); // Guardar en la tabla pivote post_categories
+    }
+
+    if ($request->has('tags')) {
+        $post->tags()->sync($request->tags); // Guardar en la tabla pivote post_tags
+    }
+
+    // Devolver el recurso Post con las relaciones cargadas
+    return new PostResource($post->load('categorias', 'tags', 'autor')); // Cargar categorías, tags y autor
+}
+
 
     public function show($id)
     {
