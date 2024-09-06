@@ -33,14 +33,15 @@ class PostController extends Controller
         'id_autor' => 'required|exists:users,id',
         'estado' => 'required|in:publicado,borrador',
         'fecha_publicacion' => 'nullable|date',
-        'categorias' => 'array', // Validar que sea un array de categorías
-        'categorias.*' => 'exists:categories,id', // Validar que cada categoría exista
-        'tags' => 'array', // Validar que sea un array de tags
-        'tags.*' => 'exists:tags,id', // Validar que cada tag exista
+        'categorias' => 'array',
+        'categorias.*' => 'exists:categories,id',
+        'tags' => 'array',
+        'tags.*' => 'exists:tags,id',
+        'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar que el archivo sea una imagen
     ]);
 
     if ($validator->fails()) {
-        return response()->json($validator->errors(), 422); // Devolver errores de validación
+        return response()->json($validator->errors(), 422);
     }
 
     // Crear el post con los datos recibidos
@@ -52,18 +53,32 @@ class PostController extends Controller
         'fecha_publicacion' => $request->fecha_publicacion,
     ]);
 
+    // Subir y registrar la imagen si está presente
+    if ($request->hasFile('imagen')) {
+    // Subir la imagen
+    $imageName = time() . '.' . $request->imagen->extension();
+    $request->imagen->move(public_path('assets/imagen/post/'), $imageName);
+
+    // Guardar la ruta relativa en el post
+    $post->ruta_imagen = 'assets/imagen/post/' . $imageName; // Guardar solo la ruta relativa
+    $post->imagen = $imageName; // Nombre del archivo de imagen
+    $post->save(); // Guardar los cambios
+}
+
+
     // Sincronizar las categorías y etiquetas si están presentes
     if ($request->has('categorias')) {
-        $post->categorias()->sync($request->categorias); // Guardar en la tabla pivote post_categories
+        $post->categorias()->sync($request->categorias);
     }
 
     if ($request->has('tags')) {
-        $post->tags()->sync($request->tags); // Guardar en la tabla pivote post_tags
+        $post->tags()->sync($request->tags);
     }
 
     // Devolver el recurso Post con las relaciones cargadas
-    return new PostResource($post->load('categorias', 'tags', 'autor')); // Cargar categorías, tags y autor
+    return new PostResource($post->load('categorias', 'tags', 'autor'));
 }
+
 
 
     public function show($id)

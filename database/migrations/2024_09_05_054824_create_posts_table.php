@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('id_autor')->constrained('users')->onDelete('cascade');
             $table->enum('estado', ['borrador', 'publicado'])->default('borrador');
             $table->string('imagen')->nullable();
+            $table->string('ruta_imagen')->nullable();
             $table->timestamp('fecha_publicacion')->nullable();
             $table->timestamps();
         });
