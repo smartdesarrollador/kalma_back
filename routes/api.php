@@ -147,6 +147,9 @@ Route::apiResource('tags', TagController::class);
 
 Route::post('posts/update', [PostController::class, 'updateWithPost']);
 
+Route::get('posts/category/{id}', [PostController::class, 'getPostsByCategory']);
+
+
 
 
 

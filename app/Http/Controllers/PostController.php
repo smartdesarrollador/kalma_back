@@ -221,4 +221,16 @@ class PostController extends Controller
     return new PostResource($post);
 }
 
+public function getPostsByCategory($categoryId)
+{
+    // Obtener posts que están relacionados con la categoría a través de la tabla pivote
+    $posts = Post::whereHas('categorias', function ($query) use ($categoryId) {
+        $query->where('categories.id', $categoryId);
+    })->with(['autor', 'categorias', 'tags'])->get();
+
+    // Retornar los posts relacionados con la categoría en un formato de JSON
+    return PostResource::collection($posts);
+}
+
+
 }
