@@ -96,38 +96,61 @@ class PostController extends Controller
     }
 
     public function update(Request $request, Post $post)
-    {
-        // Validar los datos recibidos
-        $validator = Validator::make($request->all(), [
-            'titulo' => 'sometimes|required|string|max:255',
-            'contenido' => 'sometimes|required|string',
-            'id_autor' => 'sometimes|required|exists:users,id',
-            'estado' => 'sometimes|required|in:publicado,borrador',
-            'fecha_publicacion' => 'nullable|date',
-            'categorias' => 'array',
-            'categorias.*' => 'exists:categories,id',
-            'tags' => 'array',
-            'tags.*' => 'exists:tags,id',
-        ]);
+{
+     dd($request->all());
+    // Validar los datos recibidos
+    $validator = Validator::make($request->all(), [
+        'titulo' => 'sometimes|required|string|max:255',
+        'contenido' => 'sometimes|required|string',
+        'id_autor' => 'sometimes|required|exists:users,id',
+        'estado' => 'sometimes|required|in:publicado,borrador',
+        'fecha_publicacion' => 'nullable|date',
+        'categorias' => 'array',
+        'categorias.*' => 'exists:categories,id',
+        'tags' => 'array',
+        'tags.*' => 'exists:tags,id',
+        'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar imagen si está presente
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        // Actualizar los campos del post si están presentes en el request
-        $post->update($request->only(['titulo', 'contenido', 'id_autor', 'estado', 'fecha_publicacion']));
-
-        // Sincronizar categorías y etiquetas si están presentes
-        if ($request->has('categorias')) {
-            $post->categorias()->sync($request->categorias);
-        }
-
-        if ($request->has('tags')) {
-            $post->tags()->sync($request->tags);
-        }
-
-        return new PostResource($post);
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
     }
+
+    // Actualizar los campos del post si están presentes en el request
+    $post->update($request->only(['titulo', 'contenido', 'id_autor', 'estado', 'fecha_publicacion']));
+
+    // Lógica para actualizar la imagen
+    if ($request->hasFile('imagen')) {
+        // Borrar la imagen anterior si existe
+        if ($post->imagen) {
+            $oldImagePath = public_path('assets/imagen/post/' . $post->imagen);
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath); // Eliminar el archivo de la imagen anterior
+            }
+        }
+
+        // Subir la nueva imagen
+        $imageName = time() . '.' . $request->imagen->extension();
+        $request->imagen->move(public_path('assets/imagen/post/'), $imageName);
+
+        // Actualizar la ruta de la imagen en el post
+        $post->ruta_imagen = '/assets/imagen/post/' . $imageName;
+        $post->imagen = $imageName;
+        $post->save(); // Guardar los cambios
+    }
+
+    // Sincronizar categorías y etiquetas si están presentes
+    if ($request->has('categorias')) {
+        $post->categorias()->sync($request->categorias);
+    }
+
+    if ($request->has('tags')) {
+        $post->tags()->sync($request->tags);
+    }
+
+    return new PostResource($post);
+}
+
 
     public function destroy(Post $post)
     {
@@ -138,4 +161,64 @@ class PostController extends Controller
 
         return response()->json(['message' => 'Post deleted successfully']);
     }
+
+    public function updateWithPost(Request $request)
+{
+    // Validar los datos recibidos
+    $validator = Validator::make($request->all(), [
+        'id' => 'required|exists:posts,id', // Necesitamos el ID del post a actualizar
+        'titulo' => 'sometimes|required|string|max:255',
+        'contenido' => 'sometimes|required|string',
+        'id_autor' => 'sometimes|required|exists:users,id',
+        'estado' => 'sometimes|required|in:publicado,borrador',
+        'fecha_publicacion' => 'nullable|date',
+        'categorias' => 'array',
+        'categorias.*' => 'exists:categories,id',
+        'tags' => 'array',
+        'tags.*' => 'exists:tags,id',
+        'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar la imagen
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
+    }
+
+    // Buscar el post que se va a actualizar
+    $post = Post::findOrFail($request->id);
+
+    // Actualizar los campos del post si están presentes en el request
+    $post->update($request->only(['titulo', 'contenido', 'id_autor', 'estado', 'fecha_publicacion']));
+
+    // Lógica para actualizar la imagen
+    if ($request->hasFile('imagen')) {
+        // Borrar la imagen anterior si existe
+        if ($post->imagen) {
+            $oldImagePath = public_path('assets/imagen/post/' . $post->imagen);
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath); // Eliminar el archivo de la imagen anterior
+            }
+        }
+
+        // Subir la nueva imagen
+        $imageName = time() . '.' . $request->imagen->extension();
+        $request->imagen->move(public_path('assets/imagen/post/'), $imageName);
+
+        // Actualizar la ruta de la imagen en el post
+        $post->ruta_imagen = 'assets/imagen/post/' . $imageName;
+        $post->imagen = $imageName;
+        $post->save(); // Guardar los cambios
+    }
+
+    // Sincronizar categorías y etiquetas si están presentes
+    if ($request->has('categorias')) {
+        $post->categorias()->sync($request->categorias);
+    }
+
+    if ($request->has('tags')) {
+        $post->tags()->sync($request->tags);
+    }
+
+    return new PostResource($post);
+}
+
 }

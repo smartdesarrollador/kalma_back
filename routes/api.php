@@ -145,5 +145,8 @@ Route::apiResource('comments', CommentController::class);
 Route::apiResource('tags', TagController::class);
 
 
+Route::post('posts/update', [PostController::class, 'updateWithPost']);
+
+
 
 
