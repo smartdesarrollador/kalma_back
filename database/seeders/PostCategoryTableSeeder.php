@@ -94,6 +94,30 @@ class PostCategoryTableSeeder extends Seeder
         'id_post' => 10,
         'id_categoria' => 6,
     ],
+    [
+        'id_post' => 1,
+        'id_categoria' => 7,
+    ],
+    [
+        'id_post' => 4,
+        'id_categoria' => 7,
+    ],
+    [
+        'id_post' => 7,
+        'id_categoria' => 7,
+    ],
+    [
+        'id_post' => 2,
+        'id_categoria' => 8,
+    ],
+    [
+        'id_post' => 9,
+        'id_categoria' => 8,
+    ],
+    [
+        'id_post' => 14,
+        'id_categoria' => 8,
+    ],
 ]);
 
     }
