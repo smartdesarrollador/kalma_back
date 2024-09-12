@@ -14,18 +14,87 @@ class PostCategoryTableSeeder extends Seeder
     public function run(): void
     {
         DB::table('post_categories')->insert([
-            [
-                'id_post' => 1,  // Asumimos que el post con ID 1 existe
-                'id_categoria' => 1,  // Asumimos que la categoría con ID 1 existe
-            ],
-            [
-                'id_post' => 1,
-                'id_categoria' => 2,  // El post con ID 1 pertenece también a la categoría 2
-            ],
-            [
-                'id_post' => 2,  // El post con ID 2 existe
-                'id_categoria' => 1,  // El post con ID 2 pertenece a la categoría 1
-            ]
-        ]);
+    [
+        'id_post' => 1,
+        'id_categoria' => 1,
+    ],
+    [
+        'id_post' => 1,
+        'id_categoria' => 2,
+    ],
+    [
+        'id_post' => 2,
+        'id_categoria' => 1,
+    ],
+    [
+        'id_post' => 2,
+        'id_categoria' => 3,
+    ],
+    [
+        'id_post' => 3,
+        'id_categoria' => 2,
+    ],
+    [
+        'id_post' => 3,
+        'id_categoria' => 4,
+    ],
+    [
+        'id_post' => 4,
+        'id_categoria' => 3,
+    ],
+    [
+        'id_post' => 4,
+        'id_categoria' => 5,
+    ],
+    [
+        'id_post' => 5,
+        'id_categoria' => 4,
+    ],
+    [
+        'id_post' => 5,
+        'id_categoria' => 6,
+    ],
+    [
+        'id_post' => 6,
+        'id_categoria' => 1,
+    ],
+    [
+        'id_post' => 6,
+        'id_categoria' => 3,
+    ],
+    [
+        'id_post' => 7,
+        'id_categoria' => 2,
+    ],
+    [
+        'id_post' => 7,
+        'id_categoria' => 4,
+    ],
+    [
+        'id_post' => 8,
+        'id_categoria' => 5,
+    ],
+    [
+        'id_post' => 8,
+        'id_categoria' => 6,
+    ],
+    [
+        'id_post' => 9,
+        'id_categoria' => 1,
+    ],
+    [
+        'id_post' => 9,
+        'id_categoria' => 5,
+    ],
+    [
+        'id_post' => 10,
+        'id_categoria' => 3,
+    ],
+    [
+        'id_post' => 10,
+        'id_categoria' => 6,
+    ],
+]);
+
     }
 }
