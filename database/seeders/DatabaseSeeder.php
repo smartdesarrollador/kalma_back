@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\ActividadEconomica;
+use App\Models\Categoria1;
 use App\Models\Feedback;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
@@ -63,6 +64,8 @@ class DatabaseSeeder extends Seeder
             TagsTableSeeder::class,
             PostTagsTableSeeder::class,
             PostCategoryTableSeeder::class,
+            Categoria1Seeder::class,
+            Tabla1Seeder::class,
             
         ]);
     }

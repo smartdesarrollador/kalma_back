@@ -30,6 +30,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TagController;
 
+use App\Http\Controllers\Categoria1Controller;
+use App\Http\Controllers\Tabla1Controller;
+
 use Illuminate\Support\Facades\Mail;
 
 /*
@@ -150,6 +153,20 @@ Route::post('posts/update', [PostController::class, 'updateWithPost']);
 Route::get('posts/category/{id}', [PostController::class, 'getPostsByCategory']);
 
 
+// Rutas resource para Categoria1 y Tabla1
+Route::apiResource('categoria1', Categoria1Controller::class);
+Route::apiResource('tabla1', Tabla1Controller::class);
+
+// Ruta personalizada para actualizar con POST usando updateWithPost (Categoria1)
+Route::post('categoria1/{id}/updatewithpost', [Categoria1Controller::class, 'updateWithPost']);
+
+// Ruta personalizada para actualizar con POST usando updateWithPost (Tabla1)
+Route::post('tabla1/{id}/updatewithpost', [Tabla1Controller::class, 'updateWithPost']);
+
+
+/* Route::get('categorias-con-registros', [Tabla1Controller::class, 'getCategoriasConRegistros']); */
+
+Route::get('/categorias-con-registros', [Categoria1Controller::class, 'getCategoriasConRegistros']);
 
 
 
