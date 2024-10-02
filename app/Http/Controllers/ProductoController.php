@@ -95,7 +95,7 @@ class ProductoController extends Controller
         if ($request->hasFile('imagen') || $request->hasFile('pdf')) {
 
             $nombre = $request->input('nombre');
-            /* $resumen = $request->input('resumen'); */
+            $resumen = $request->input('resumen');
             $descripcion = $request->input('descripcion');
             /* $duracion = $request->input('duracion'); */
             /* $maestro = $request->input('maestro'); */
@@ -118,7 +118,7 @@ class ProductoController extends Controller
            $path = $request->file('pdf')->move($this->urlAssetsProdPdf, $compPicPdf); */
 
             $producto->nombre = $nombre;
-            /* $producto->resumen = $resumen; */
+            $producto->resumen = $resumen;
             $producto->descripcion = $descripcion;
             /* $producto->duracion = $duracion; */
             $producto->imagen = $compPic;
@@ -142,7 +142,7 @@ class ProductoController extends Controller
 {
     $id = $request->input('id_producto');
     $nombre = $request->input('nombre');
-    /* $resumen = $request->input('resumen'); */
+    $resumen = $request->input('resumen');
     $descripcion = $request->input('descripcion');
     /* $duracion = $request->input('duracion'); */
     /* $maestro = $request->input('maestro'); */
@@ -174,7 +174,7 @@ class ProductoController extends Controller
         }
 
         $producto->nombre = $nombre;
-        /* $producto->resumen = $resumen; */
+        $producto->resumen = $resumen;
         $producto->descripcion = $descripcion;
         /* $producto->duracion = $duracion; */
         $producto->imagen = $compPic;
@@ -214,7 +214,7 @@ class ProductoController extends Controller
 
     }else{
          $producto->nombre = $nombre;
-         /* $producto->resumen = $resumen; */
+         $producto->resumen = $resumen;
         $producto->descripcion = $descripcion;
         /* $producto->duracion = $duracion; */
         /* $producto->maestro = $maestro; */
