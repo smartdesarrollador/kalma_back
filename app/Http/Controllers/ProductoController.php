@@ -19,8 +19,8 @@ class ProductoController extends Controller
     {
         $this->urlAssets = 'assets/imagen/producto';
         $this->urlAssetsProd = config('myconfig.url_upload_producto');
-        $this->urlAssetsPdf = 'assets/pdf/producto';
-        $this->urlAssetsProdPdf = config('myconfig.url_upload_producto_pdf');
+        /* $this->urlAssetsPdf = 'assets/pdf/producto';
+        $this->urlAssetsProdPdf = config('myconfig.url_upload_producto_pdf'); */
         /* $this->urlAssetsProd = '/home1/iatecdigital/back.iatecdigital.com/assets/imagen/producto'; */
     }
 
@@ -95,12 +95,12 @@ class ProductoController extends Controller
         if ($request->hasFile('imagen') || $request->hasFile('pdf')) {
 
             $nombre = $request->input('nombre');
-            $resumen = $request->input('resumen');
+            /* $resumen = $request->input('resumen'); */
             $descripcion = $request->input('descripcion');
-            $duracion = $request->input('duracion');
+            /* $duracion = $request->input('duracion'); */
             /* $maestro = $request->input('maestro'); */
-            $observacion = $request->input('observacion');
-            $precio = $request->input('precio');
+            /* $observacion = $request->input('observacion'); */
+            /* $precio = $request->input('precio'); */
             $destacado = $request->input('destacado');
             $categoria_producto_id = $request->input('categoria_producto_id');
 
@@ -111,23 +111,23 @@ class ProductoController extends Controller
            $path = $request->file('imagen')->move($this->urlAssetsProd, $compPic);
            //$path = $request->file('imagen')->move(public_path($this->urlAssets), $compPic);
 
-           $completeFileNamePdf = $request->file('pdf')->getClientOriginalName();
+           /* $completeFileNamePdf = $request->file('pdf')->getClientOriginalName();
             $fileNameOnlyPdf = pathinfo($completeFileNamePdf, PATHINFO_FILENAME);
             $extenshionPdf = $request->file('pdf')->getClientOriginalExtension();
             $compPicPdf = str_replace('', '_', $fileNameOnlyPdf) . '-' . rand() . '_' . time() . '.' . $extenshionPdf;
-           $path = $request->file('pdf')->move($this->urlAssetsProdPdf, $compPicPdf);
+           $path = $request->file('pdf')->move($this->urlAssetsProdPdf, $compPicPdf); */
 
             $producto->nombre = $nombre;
-            $producto->resumen = $resumen;
+            /* $producto->resumen = $resumen; */
             $producto->descripcion = $descripcion;
-            $producto->duracion = $duracion;
+            /* $producto->duracion = $duracion; */
             $producto->imagen = $compPic;
             $producto->ruta_imagen = $this->urlAssets.'/'.$compPic;
-            $producto->pdf = $compPicPdf;
-            $producto->ruta_pdf = $this->urlAssetsPdf.'/'.$compPicPdf;
+            /* $producto->pdf = $compPicPdf;
+            $producto->ruta_pdf = $this->urlAssetsPdf.'/'.$compPicPdf; */
             /* $producto->maestro = $maestro; */
-            $producto->observacion = $observacion;
-            $producto->precio = $precio;
+            /* $producto->observacion = $observacion; */
+            /* $producto->precio = $precio; */
             $producto->destacado = $destacado;
             $producto->categoria_producto_id = $categoria_producto_id;
         }
@@ -142,12 +142,12 @@ class ProductoController extends Controller
 {
     $id = $request->input('id_producto');
     $nombre = $request->input('nombre');
-    $resumen = $request->input('resumen');
+    /* $resumen = $request->input('resumen'); */
     $descripcion = $request->input('descripcion');
-    $duracion = $request->input('duracion');
+    /* $duracion = $request->input('duracion'); */
     /* $maestro = $request->input('maestro'); */
-    $observacion = $request->input('observacion');
-    $precio = $request->input('precio');
+    /* $observacion = $request->input('observacion'); */
+    /* $precio = $request->input('precio'); */
     $destacado = $request->input('destacado');
     $categoria_producto_id = $request->input('categoria_producto_id');
 
@@ -157,7 +157,8 @@ class ProductoController extends Controller
         return ['status' => false, 'message' => 'Post Not Found'];
     }
 
-    if ($request->hasFile('imagen') || $request->hasFile('pdf')) {
+    /* if ($request->hasFile('imagen') || $request->hasFile('pdf')) { */
+    if ($request->hasFile('imagen')) {
 
         if ($request->hasFile('imagen')) {
              $completeFileName = $request->file('imagen')->getClientOriginalName();
@@ -173,19 +174,19 @@ class ProductoController extends Controller
         }
 
         $producto->nombre = $nombre;
-        $producto->resumen = $resumen;
+        /* $producto->resumen = $resumen; */
         $producto->descripcion = $descripcion;
-        $producto->duracion = $duracion;
+        /* $producto->duracion = $duracion; */
         $producto->imagen = $compPic;
         $producto->ruta_imagen = $this->urlAssets.'/'.$compPic;
         /* $producto->maestro = $maestro; */
-        $producto->observacion = $observacion;
-        $producto->precio = $precio;
+       /*  $producto->observacion = $observacion; */
+        /* $producto->precio = $precio; */
         $producto->destacado = $destacado;
         $producto->categoria_producto_id = $categoria_producto_id;
         }
 
-        if ($request->hasFile('pdf')) {
+        /* if ($request->hasFile('pdf')) {
              $completeFileNamePdf = $request->file('pdf')->getClientOriginalName();
         $fileNameOnlyPdf = pathinfo($completeFileNamePdf, PATHINFO_FILENAME);
         $extensionPdf = $request->file('pdf')->getClientOriginalExtension();
@@ -202,23 +203,23 @@ class ProductoController extends Controller
         $producto->duracion = $duracion;
         $producto->pdf = $compPicPdf;
         $producto->ruta_pdf = $this->urlAssetsPdf.'/'.$compPicPdf;
-        /* $producto->maestro = $maestro; */
+        
         $producto->observacion = $observacion;
         $producto->precio = $precio;
         $producto->destacado = $destacado;
         $producto->categoria_producto_id = $categoria_producto_id;
-        }
+        } */
 
        
 
     }else{
          $producto->nombre = $nombre;
-         $producto->resumen = $resumen;
+         /* $producto->resumen = $resumen; */
         $producto->descripcion = $descripcion;
-        $producto->duracion = $duracion;
+        /* $producto->duracion = $duracion; */
         /* $producto->maestro = $maestro; */
-        $producto->observacion = $observacion;
-        $producto->precio = $precio;
+        /* $producto->observacion = $observacion; */
+        /* $producto->precio = $precio; */
         $producto->destacado = $destacado;
         $producto->categoria_producto_id = $categoria_producto_id;
     }
