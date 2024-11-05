@@ -124,9 +124,19 @@ Route::delete('productos/{id}', [ProductoController::class, 'destroy']);
 Route::post('productos/subir', [ProductoController::class, 'file']);
 Route::post('productos/update', [ProductoController::class, 'updateFile']);
 
-/* 10.- ENVIO-CORREO-V1-P1  */
+
 // Contacto
 Route::get('contactos', [ContactoController::class, 'index']);
+Route::get('/contactos/{id_contacto}', [ContactoController::class, 'show']);
+Route::post('/contactos', [ContactoController::class, 'store']);
+
+// Ruta para actualizar un contacto existente
+Route::put('/contactos/{id_contacto}', [ContactoController::class, 'update']);
+
+// Ruta para eliminar un contacto
+Route::delete('/contactos/{id_contacto}', [ContactoController::class, 'destroy']);
+
+/* 10.- ENVIO-CORREO-V1-P1  */
 Route::post('contacto',[ContactoController::class,'sendContactForm']);
 /* /10.- ENVIO-CORREO-V1-P1  */
 
