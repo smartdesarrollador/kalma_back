@@ -18,11 +18,11 @@
         <h1>Confirmación de recepción de mensaje</h1>
         <p>Hola {{ $data['nombre'] }},</p>
         <p>Gracias por ponerte en contacto con nosotros. Hemos recibido tu mensaje y estaremos encantados de ayudarte.</p>
-        <p>Nos pondremos en contacto contigo pronto para proporcionarte más información sobre nuestros Cursos y Especialidades.</p>
+        <p>Nos pondremos en contacto contigo pronto para proporcionarte más información sobre nuestros Servicios.</p>
         <br>
         <div class="message">
             <p>Saludos cordiales,</p>
-            <p>ONE DIGITAL</p>
+            <p>Kalma Perú</p>
         </div>
     </div>
     {{-- /8.- ENVIO-CORREO-V1-P1 --}}

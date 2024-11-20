@@ -31,8 +31,12 @@ class ContactoEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from:new Address('sistemadesignstyle@gmail.com','sistemas'),
-            subject: 'Test Contact',
+            /* from:new Address('sistemadesignstyle@gmail.com','sistemas'),
+            subject: 'Test Contact', */
+
+
+            from: new Address('example@example.com', 'Test Sender'),
+       subject: 'Test Email',
         );
     }
 
