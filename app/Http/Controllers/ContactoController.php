@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 /* 6.- ENVIO-CORREO-V1-P1 */
 use App\Mail\ContactoEmail;
+use App\Mail\NotificacionAdminEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Contacto;
 /* /6.- ENVIO-CORREO-V1-P1 */
@@ -39,39 +40,23 @@ class ContactoController extends Controller
 
      public function sendContactForm(Request $request)
     {
-        /* $data['nombre'] = $request->nombre;
-        $nombre = $data['nombre']; */
+        $data = [
+            'nombre' => $request->input('nombre'),
+            'correo' => $request->input('correo'),
+            'telefono' => $request->input('telefono'),
+            'asunto' => $request->input('asunto'),
+            'mensaje' => $request->input('mensaje'),
+        ];
 
+        // Enviar email al cliente
+        $emailCliente = new ContactoEmail($data);
+        Mail::to($request->input('correo'))->send($emailCliente);
 
-    /* Mail::send('contacto', $data, function ($message) use ($data) {
-      $message->to('prueba@iatecdigital.com', $data['nombre'])
-      ->subject("Titulo del Mensaje");
-    }); */
+        // Enviar notificación diferente al administrador
+        $emailAdmin = new NotificacionAdminEmail($data);
+        Mail::to('atencion@kalmaperu.org')->send($emailAdmin);
 
-$data = [
-        'nombre' => $request->input('nombre'),
-        'correo' => $request->input('correo'),
-        'telefono' => $request->input('telefono'),
-        'asunto' => $request->input('asunto'),
-        'mensaje' => $request->input('mensaje'),
-    ];
-
-    $correoForm = $request->input('correo');
-
-    $email = new ContactoEmail($data);
-
-    Mail::to($correoForm)->send($email);
-
-// Validación de datos (puedes agregar validaciones adicionales según tus necesidades)
-        /* $request->validate([
-            'nombre' => 'required|string|max:255',
-            'correo' => 'required|email|max:255',
-            'telefono' => 'nullable|string|max:255',
-            'asunto' => 'required|string|max:255',
-            'mensaje' => 'required|string',
-        ]); */
-
-        // Crear un nuevo objeto Contacto con los datos del formulario
+        // Guardar en base de datos
         $contacto = new Contacto([
             'nombre' => $request->input('nombre'),
             'correo' => $request->input('correo'),
@@ -79,16 +64,14 @@ $data = [
             'asunto' => $request->input('asunto'),
             'mensaje' => $request->input('mensaje'),
         ]);
-
-        // Guardar el objeto en la base de datos
+        
         $contacto->save();
 
-
-
-    return response()->json([
-      'Success' => 'Excelente email enviado..',
-      'code' => '200',
-    ],200);
+        return response()->json([
+            'Success' => 'Emails enviados correctamente',
+            'code' => '200',
+        ], 200);
+    
 
 
     }

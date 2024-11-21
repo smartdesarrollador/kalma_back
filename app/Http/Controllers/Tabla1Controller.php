@@ -15,42 +15,61 @@ class Tabla1Controller extends Controller
     }
 
     public function store(Request $request)
-{
-    $data = $request->validate([
-        'varchar1' => 'nullable|string|max:250',
-        'varchar2' => 'nullable|string|max:250',
-        'varchar3' => 'nullable|string|max:250',
-        'varchar4' => 'nullable|string|max:250',
-        'varchar5' => 'nullable|string|max:250',
-        'varchar6' => 'nullable|string|max:250',
-        'varchar7' => 'nullable|image|mimes:jpg,png|max:2048', // Validación para imagen jpg o png
-        'decimal1' => 'nullable|numeric',
-        'decimal2' => 'nullable|numeric',
-        'decimal3' => 'nullable|numeric',
-        'text1' => 'nullable|string',
-        'text2' => 'nullable|string',
-        'text3' => 'nullable|string',
-        'boolean1' => 'nullable|boolean',
-        'date1' => 'nullable|date',
-        'time1' => 'nullable',
-        'categoria1_id' => 'nullable|exists:categoria1,id',
-    ]);
+    {
+        $data = $request->validate([
+            'varchar1' => 'nullable|string|max:250',
+            'varchar2' => 'nullable|string|max:250',
+            'varchar3' => 'nullable|string|max:250',
+            'varchar4' => 'nullable|string|max:250',
+            'varchar5' => 'nullable|string|max:250',
+            'varchar6' => 'nullable|string|max:250',
+            'varchar7' => 'nullable|image|mimes:jpg,png|max:2048',
+            'decimal1' => 'nullable|numeric',
+            'decimal2' => 'nullable|numeric',
+            'decimal3' => 'nullable|numeric',
+            'text1' => 'nullable|string',
+            'text2' => 'nullable|string',
+            'text3' => 'nullable|string',
+            'boolean1' => 'nullable|boolean',
+            'date1' => 'nullable|date',
+            'time1' => 'nullable',
+            'categoria1_id' => 'nullable|exists:categoria1,id',
+        ]);
 
-    // Si se sube una imagen, la guardamos en la carpeta 'public' y almacenamos el nombre del archivo
-    if ($request->hasFile('varchar7')) {
-        $file = $request->file('varchar7');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('assets/imagen/tabla1'), $filename);
-        $data['varchar7'] = 'assets/imagen/tabla1/' . $filename; // Guardamos la ruta relativa
+        try {
+            if ($request->hasFile('varchar7')) {
+                $file = $request->file('varchar7');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                
+                // Ruta absoluta donde se guardar¨¢n las im¨¢genes
+                $uploadPath = '/home/enfocussol3/apikalmaperu.enfocussoluciones.pe/assets/imagen/tabla1/';
+                
+                // Asegurarnos de que el directorio existe
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                
+                // Mover el archivo
+                $file->move($uploadPath, $filename);
+                
+                // Guardar la ruta relativa en la base de datos
+                $data['varchar7'] = 'assets/imagen/tabla1/' . $filename;
+            }
+
+            $tabla1 = Tabla1::create($data);
+
+            return response()->json([
+                'message' => 'Registro creado satisfactoriamente.',
+                'data' => new Tabla1Resource($tabla1),
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al crear el registro.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
-
-    $tabla1 = Tabla1::create($data);
-
-    return response()->json([
-        'message' => 'Registro creado satisfactoriamente.',
-        'data' => new Tabla1Resource($tabla1),
-    ], 201);
-}
 
 
 
@@ -96,7 +115,8 @@ class Tabla1Controller extends Controller
 }
 
 
-    public function updateWithPost(Request $request, $id)
+
+public function updateWithPost(Request $request, $id)
 {
     $data = $request->validate([
         'varchar1' => 'nullable|string|max:250',
@@ -105,7 +125,7 @@ class Tabla1Controller extends Controller
         'varchar4' => 'nullable|string|max:250',
         'varchar5' => 'nullable|string|max:250',
         'varchar6' => 'nullable|string|max:250',
-        'varchar7' => 'nullable|image|mimes:jpg,png|max:2048', // Validación para imagen jpg o png
+        'varchar7' => 'nullable|image|mimes:jpg,png|max:2048',
         'decimal1' => 'nullable|numeric',
         'decimal2' => 'nullable|numeric',
         'decimal3' => 'nullable|numeric',
@@ -118,27 +138,51 @@ class Tabla1Controller extends Controller
         'categoria1_id' => 'nullable|exists:categoria1,id',
     ]);
 
-    $tabla1 = Tabla1::findOrFail($id);
-
-    // Si se sube una nueva imagen, la guardamos en la carpeta 'public' y actualizamos el nombre del archivo
-    if ($request->hasFile('varchar7')) {
-        $file = $request->file('varchar7');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('assets/imagen/tabla1'), $filename);
-        $data['varchar7'] = 'assets/imagen/tabla1/' . $filename; // Guardamos la ruta relativa
-
-        // Opción para eliminar la imagen antigua si existe
-        if ($tabla1->varchar7 && file_exists(public_path($tabla1->varchar7))) {
-            unlink(public_path($tabla1->varchar7));
+    try {
+        $tabla1 = Tabla1::findOrFail($id);
+        
+        if ($request->hasFile('varchar7')) {
+            $file = $request->file('varchar7');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            
+            // Ruta absoluta donde se guardar¨¢n las im¨¢genes
+            $uploadPath = '/home/enfocussol3/apikalmaperu.enfocussoluciones.pe/assets/imagen/tabla1/';
+            
+            // Asegurarnos de que el directorio existe
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+            
+            // Eliminar la imagen antigua si existe
+            if ($tabla1->varchar7) {
+                $oldImagePath = $uploadPath . basename($tabla1->varchar7);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+            
+            // Mover el nuevo archivo
+            if (!$file->move($uploadPath, $filename)) {
+                throw new \Exception('No se pudo guardar la nueva imagen');
+            }
+            
+            // Guardar la ruta relativa en la base de datos
+            $data['varchar7'] = 'assets/imagen/tabla1/' . $filename;
         }
+
+        $tabla1->update($data);
+
+        return response()->json([
+            'message' => 'Registro actualizado satisfactoriamente.',
+            'data' => new Tabla1Resource($tabla1),
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error al actualizar el registro.',
+            'error' => $e->getMessage()
+        ], 500);
     }
-
-    $tabla1->update($data);
-
-    return response()->json([
-        'message' => 'Registro actualizado satisfactoriamente.',
-        'data' => new Tabla1Resource($tabla1),
-    ], 200);
 }
 
 public function getCategoriasConRegistros()

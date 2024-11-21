@@ -1,17 +1,17 @@
 <?php
 
-/* 5.- ENVIO-CORREO-V1-P1 */
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Address;
 
-class ContactoEmail extends Mailable
+
+class NotificacionAdminEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -31,12 +31,8 @@ class ContactoEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            /* from:new Address('sistemadesignstyle@gmail.com','sistemas'),
-            subject: 'Test Contact', */
-
-
-            from: new Address('atencion@kalmaperu.org', 'Atención Kalma'),
-       subject: 'Atención Kalma Perú',
+            from: new Address('atencion@kalmaperu.org', 'Contacto Web Kalma'),
+            subject: 'Contacto Web Kalma',
         );
     }
 
@@ -46,7 +42,7 @@ class ContactoEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'contacto',
+            view: 'notificacion-admin',  // Esta será tu segunda plantilla blade
         );
     }
 
@@ -59,12 +55,4 @@ class ContactoEmail extends Mailable
     {
         return [];
     }
-
-    /* public function build()
-    {
-        return $this->view('contacto')
-                    ->with('nombre', $this->nombre);
-    } */
 }
-
-/* /5.- ENVIO-CORREO-V1-P1 */
